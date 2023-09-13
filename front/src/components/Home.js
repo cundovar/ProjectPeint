@@ -8,7 +8,7 @@ const Home = () => {
   useEffect(() => {
     const fetchOeuvre = async () => {
       try {
-        const { data } = await axios.get("http://localhost:8010/api/oeuvres");
+        const { data } = await axios.get(URL.fecthAllOeuvre);
         setOeuvre(data["hydra:member"]);
       } catch (error) {
         console.error("Erreur :", error);
