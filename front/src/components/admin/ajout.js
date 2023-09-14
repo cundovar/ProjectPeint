@@ -1,3 +1,6 @@
+
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { URL } from "../../service/url";
@@ -7,12 +10,12 @@ const Ajouter = () => {
     titre: "",
     description: "",
     image: "",
-    matieres: [], // Champ pour les matières (liste vide au départ)
-    categories: [], // Champ pour les catégories (liste vide au départ)
+    matieres: "",
+    categories: "",
   });
 
-  const [matieres, setMatieres] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [matieres, setMatieres]=useState([])
+  const [categories,setCategories]=useState([])
 
   useEffect(() => {
     // Récupérer les données des matières depuis l'API
@@ -25,20 +28,15 @@ const Ajouter = () => {
       setCategories(response.data["hydra:member"]);
     });
   }, []);
+  // Le tableau vide signifie que cette opération s'exécute une seule fois après le rendu initial
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Formatage des champs "matieres" et "categories" pour correspondre au format JSON attendu
-      const formattedData = {
-        ...formData,
-        matieres: formData.matieres.map((matiere) => matiere["@id"]),
-        categories: formData.categories.map((categorie) => categorie["@id"]),
-      };
-
       const response = await axios.post(
         "http://localhost:8010/api/oeuvres",
-        formattedData, // Utilisation des données formatées
+        formData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -47,8 +45,8 @@ const Ajouter = () => {
       );
       if (response.status === 201) {
         console.log("ok");
-      } else {
-        console.log("raté");
+      }else{
+        console.log('raté')
       }
     } catch (error) {
       console.error("erreur :", error);
@@ -61,16 +59,6 @@ const Ajouter = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  // Fonction de gestion de la sélection des matières
-  const handleMatieresChange = (selectedMatieres) => {
-    setFormData({ ...formData, matieres: selectedMatieres });
-  };
-
-  // Fonction de gestion de la sélection des catégories
-  const handleCategoriesChange = (selectedCategories) => {
-    setFormData({ ...formData, categories: selectedCategories });
   };
 
   return (
@@ -97,42 +85,27 @@ const Ajouter = () => {
           value={formData.image}
           onChange={handleChange}
         />
-        {/* Sélecteur pour les matières */}
-        <select
-          multiple // Permet de sélectionner plusieurs matières
+       <select
           name="matieres"
           value={formData.matieres}
-          onChange={(e) => {
-            const selectedOptions = Array.from(
-              e.target.selectedOptions,
-              (option) => JSON.parse(option.value)
-            );
-            handleMatieresChange(selectedOptions);
-          }}
+          onChange={handleChange}
         >
-          <option value="">Sélectionnez une ou plusieurs matières</option>
+          <option value="">Sélectionnez une matière</option>
           {matieres.map((matiere) => (
-            <option key={matiere.id} value={JSON.stringify(matiere)}>
+            <option key={matiere.id} value={matiere["@id"]}>
               {matiere.nom}
             </option>
           ))}
         </select>
-        {/* Sélecteur pour les catégories */}
+        {/* Liste déroulante pour les catégories */}
         <select
-          multiple // Permet de sélectionner plusieurs catégories
           name="categories"
           value={formData.categories}
-          onChange={(e) => {
-            const selectedOptions = Array.from(
-              e.target.selectedOptions,
-              (option) => JSON.parse(option.value)
-            );
-            handleCategoriesChange(selectedOptions);
-          }}
+          onChange={handleChange}
         >
-          <option value="">Sélectionnez une ou plusieurs catégories</option>
+          <option value="">Sélectionnez une catégorie</option>
           {categories.map((categorie) => (
-            <option key={categorie.id} value={JSON.stringify(categorie)}>
+            <option key={categorie.id} value={categorie["@id"]}>
               {categorie.nom}
             </option>
           ))}

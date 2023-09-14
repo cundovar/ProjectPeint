@@ -7,13 +7,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  
+ * )
  * @ORM\Entity(repositoryClass=OeuvreRepository::class)
  */
 class Oeuvre
 {
+
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -22,33 +27,34 @@ class Oeuvre
     private $id;
 
     /**
+     * 
      * @ORM\Column(type="string", length=255)
      */
     private $titre;
 
     /**
+     * 
      * @ORM\Column(type="string", length=255)
      */
     private $image;
 
  
 
+  
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $commentaire;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     *
      */
     private $description;
 
     /**
      * @ORM\ManyToMany(targetEntity=Categorie::class, mappedBy="oeuvre")
+     * 
      */
     private $categories;
 
     /**
+     *
      * @ORM\ManyToMany(targetEntity=Matiere::class, mappedBy="oeuvre")
      */
     private $matieres;
@@ -90,17 +96,7 @@ class Oeuvre
 
 
 
-    public function getCommentaire(): ?string
-    {
-        return $this->commentaire;
-    }
-
-    public function setCommentaire(?string $commentaire): self
-    {
-        $this->commentaire = $commentaire;
-
-        return $this;
-    }
+   
 
     public function getDescription(): ?string
     {
