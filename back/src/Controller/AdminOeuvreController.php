@@ -55,7 +55,18 @@ public function ajouter(Request $request, EntityManagerInterface $manager, Seria
             $oeuvre = new Oeuvre();
             $oeuvre->setTitre($data->titre);
             $oeuvre->setDescription($data->description);
-            $oeuvre->setImage($data->image);
+            
+
+         $imageFileUpload=$request->files->get('image');
+         
+         if(!$imageFileUpload || !$imageFileUpload->isValid()){
+            return new JsonResponse(['message' => 'Aucun fichier valide n\'a été téléchargé.'], JsonResponse::HTTP_BAD_REQUEST);
+         }
+
+         $imageName=uniqid().".".$imageFileUpload->getClientOriginalExtension();
+         $imageFileUpload->move($this->getParameter("imageOeuvre"), $imageName);
+         $oeuvre->setImage($imageName);
+ 
 
             foreach ($data->categories as $category) {
                 $oeuvre->addCategory($category);

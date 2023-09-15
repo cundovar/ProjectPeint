@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { URL } from "../../service/url";
+import Form from 'react-bootstrap/Form';
 
 const Ajouter = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Ajouter = () => {
 
   const [matieres, setMatieres] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     // Récupérer les données des matières depuis l'API
@@ -90,13 +92,25 @@ const Ajouter = () => {
           value={formData.description}
           onChange={handleChange}
         ></textarea>
-        <input
-          type="text"
-          name="image"
-          placeholder="URL de l'image"
-          value={formData.image}
-          onChange={handleChange}
-        />
+        <Form.Group controlId="image">
+          <Form.Label>Image</Form.Label>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
+        </Form.Group>
+
+        {image && (
+  <img
+    src={window.URL.createObjectURL(image)}
+    alt="Aperçu de l'image"
+    style={{ maxWidth: '150px', marginTop: '10px' }}
+  />
+)}
+
+
+
         {/* Sélecteur pour les matières */}
         <select
           multiple // Permet de sélectionner plusieurs matières
@@ -119,7 +133,7 @@ const Ajouter = () => {
         </select>
         {/* Sélecteur pour les catégories */}
         <select
-          multiple // Permet de sélectionner plusieurs catégories
+    
           name="categories"
           value={formData.categories}
           onChange={(e) => {

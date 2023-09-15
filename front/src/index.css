@@ -4,6 +4,7 @@
  
 @tailwind utilities;
 
+
 .ff{
   display: flex;
   flex-direction: column;
