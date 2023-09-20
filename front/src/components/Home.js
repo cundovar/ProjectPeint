@@ -4,6 +4,12 @@ import { URL } from "../service/url";
 
 const Home = () => {
   const [oeuvre, setOeuvre] = useState([]);
+  const [indexTableau,setIndexTableau]=useState(0)
+  const tableau=['hh','ff','aa']
+  const plus=()=>{
+    setIndexTableau((prevIndex)=>(prevIndex+1)% tableau.length)
+  }
+
 
   useEffect(() => {
     const fetchOeuvre = async () => {
@@ -18,9 +24,17 @@ const Home = () => {
     fetchOeuvre();
   }, []);
 
+
+
   return (
     <>
-      <div>test 1</div>
+      
+              <p>test :{tableau[indexTableau]} </p>
+              <button onClick= {plus}>plus 1</button>
+             
+
+      <div className="mt-10">test 1</div>
+      <div className="oeuvre flex space-x-3 mt-10">
       {oeuvre &&
         oeuvre.map((item, index) => (
           <div key={index}>
@@ -30,6 +44,8 @@ const Home = () => {
             <div>{item.description}</div>
           </div>
         ))}
+
+      </div>
     </>
   );
 };
