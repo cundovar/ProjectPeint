@@ -7,13 +7,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
+ *       normalizationContext={"groups"={"oeuvre:read"}},
+ *     denormalizationContext={"groups"={"oeuvre:write"}},
+ *   
+ *     collectionOperations={
+ *         "get",
+ *         "post"={"input_formats"={"multipart/form-data"}}
+ *     }
+ * )   
+ * 
  *  
  * )
  * @ORM\Entity(repositoryClass=OeuvreRepository::class)
+ * @Vich\Uploadable
+ 
+    
  */
 class Oeuvre
 {
@@ -35,6 +50,7 @@ class Oeuvre
     /**
      * 
      * @ORM\Column(type="string", length=255)
+ 
      */
     private $image;
 
@@ -58,6 +74,24 @@ class Oeuvre
      * @ORM\ManyToMany(targetEntity=Matiere::class, mappedBy="oeuvre")
      */
     private $matieres;
+
+
+     /**
+     * @Vich\UploadableField(mapping="oeuvre_image", fileNameProperty="image")
+     * @var File|null
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $filepath;
+
+      /**
+     * @ORM\Column(type="datetime")
+     * @Assert\NotBlank()
+     */
+    private $dateAt;
 
     public function __construct()
     {
@@ -91,6 +125,18 @@ class Oeuvre
     {
         $this->image = $image;
 
+        return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile): self
+    {
+        $this->imageFile = $imageFile;
+       
         return $this;
     }
 
@@ -161,6 +207,30 @@ class Oeuvre
             $matiere->removeOeuvre($this);
         }
 
+        return $this;
+    }
+
+    public function getFilepath(): ?string
+    {
+        return $this->filepath;
+    }
+
+    public function setFilepath(?string $filepath): self
+    {
+        $this->filepath = $filepath;
+
+        return $this;
+    }
+
+
+    public function getDateAt(): ?\DateTimeInterface
+    {
+        return $this->dateAt;
+    }
+
+    public function setDateAt(\DateTimeInterface $dateAt): self
+    {
+        $this->dateAt = $dateAt;
         return $this;
     }
 }

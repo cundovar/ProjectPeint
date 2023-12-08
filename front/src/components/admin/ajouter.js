@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { URL } from "../../service/url";
-import Form from 'react-bootstrap/Form';
+
 
 const Ajouter = () => {
+
+
   const [formData, setFormData] = useState({
     titre: "",
     description: "",
@@ -14,7 +16,7 @@ const Ajouter = () => {
 
   const [matieres, setMatieres] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [image, setImage] = useState(null);
+ 
 
   useEffect(() => {
     // Récupérer les données des matières depuis l'API
@@ -30,6 +32,23 @@ const Ajouter = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // if (image) {
+    //   const formData = new FormData();
+    //   formData.append('file', image);
+
+    //   try {
+    //     const response = await fetch('http://localhost:8010/api/oeuvres', {
+    //       method: 'POST',
+    //       body: formData,
+    //     });
+
+    //     const data = await response.json();
+    //     console.log('Image uploaded:', data);
+    //   } catch (error) {
+    //     console.error('Error uploading image:', error);
+    //   }
+    // }
+
     try {
       // Formatage des champs "matieres" et "categories" pour correspondre au format JSON attendu
       const formattedData = {
@@ -37,6 +56,8 @@ const Ajouter = () => {
         matieres: formData.matieres.map((matiere) => matiere["@id"]),
         categories: formData.categories.map((categorie) => categorie["@id"]),
       };
+
+    
 
       const response = await axios.post(
         "http://localhost:8010/api/oeuvres",
@@ -63,6 +84,12 @@ const Ajouter = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+      // if(name==="image"){
+      //   setFormData({...formData,[name]:e.target.files[0]})
+      //   setImage(e.target.files[0])
+      // }else{
+        // setFormData({...formData,[name]:value})
+      // }
   };
 
   // Fonction de gestion de la sélection des matières
@@ -91,13 +118,15 @@ const Ajouter = () => {
           placeholder="Description"
           value={formData.description}
           onChange={handleChange}
-        ></textarea>
-        <Form.Group controlId="image">
+        />
+        {/* <Form.Group controlId="image">
           <Form.Label>Image</Form.Label>
           <Form.Control
             type="file"
             accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={handleImageChange}
+         
+            name="image"
           />
         </Form.Group>
 
@@ -106,31 +135,28 @@ const Ajouter = () => {
     src={window.URL.createObjectURL(image)}
     alt="Aperçu de l'image"
     style={{ maxWidth: '150px', marginTop: '10px' }}
-  />
-)}
+  /> */}
+{/* )} */}
 
 
 
         {/* Sélecteur pour les matières */}
         <select
-          multiple // Permet de sélectionner plusieurs matières
-          name="matieres"
-          value={formData.matieres}
-          onChange={(e) => {
-            const selectedOptions = Array.from(
-              e.target.selectedOptions,
-              (option) => JSON.parse(option.value)
-            );
-            handleMatieresChange(selectedOptions);
-          }}
-        >
-          <option value="">Sélectionnez une ou plusieurs matières</option>
-          {matieres.map((matiere) => (
-            <option key={matiere.id} value={JSON.stringify(matiere)}>
-              {matiere.nom}
-            </option>
-          ))}
-        </select>
+  // multiple // Permet de sélectionner plusieurs matières
+  name="matieres"
+  value={formData.matieres} // Assurez-vous que formData.matieres est un tableau
+  onChange={(e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, (option) => JSON.parse(option.value));
+    handleMatieresChange(selectedOptions);
+  }}
+>
+  <option value="">Sélectionnez une ou plusieurs matières</option>
+  {matieres.map((matiere) => (
+    <option key={matiere.id} value={JSON.stringify(matiere)}>
+      {matiere.nom}
+    </option>
+  ))}
+</select>
         {/* Sélecteur pour les catégories */}
         <select
     

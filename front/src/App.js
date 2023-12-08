@@ -1,9 +1,14 @@
-import logo from './logo.svg';
+
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Ajouter from './components/admin/ajouter';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import TestReact from './components/pageTest0';
+
+
+
+
+
 
 
 function App() {
@@ -12,7 +17,9 @@ function App() {
     {/* <Navbar />  */}
         <Routes> 
              <Route path="/" element={<Home />}  /> 
-             <Route path="/ajoutoeuvre" element={<Ajouter />}  /> 
+             <Route path="/test" element={<TestReact />}  /> 
+             <Route path="/ajout" element={<Ajouter />}  /> 
+               
         </Routes> 
      {/* <Footer /> */}
 </Router> ); }
