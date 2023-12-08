@@ -32,23 +32,7 @@ const Ajouter = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (image) {
-    //   const formData = new FormData();
-    //   formData.append('file', image);
-
-    //   try {
-    //     const response = await fetch('http://localhost:8010/api/oeuvres', {
-    //       method: 'POST',
-    //       body: formData,
-    //     });
-
-    //     const data = await response.json();
-    //     console.log('Image uploaded:', data);
-    //   } catch (error) {
-    //     console.error('Error uploading image:', error);
-    //   }
-    // }
-
+   
     try {
       // Formatage des champs "matieres" et "categories" pour correspondre au format JSON attendu
       const formattedData = {
@@ -84,12 +68,7 @@ const Ajouter = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-      // if(name==="image"){
-      //   setFormData({...formData,[name]:e.target.files[0]})
-      //   setImage(e.target.files[0])
-      // }else{
-        // setFormData({...formData,[name]:value})
-      // }
+     
   };
 
   // Fonction de gestion de la sélection des matières
@@ -119,24 +98,7 @@ const Ajouter = () => {
           value={formData.description}
           onChange={handleChange}
         />
-        {/* <Form.Group controlId="image">
-          <Form.Label>Image</Form.Label>
-          <Form.Control
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-         
-            name="image"
-          />
-        </Form.Group>
-
-        {image && (
-  <img
-    src={window.URL.createObjectURL(image)}
-    alt="Aperçu de l'image"
-    style={{ maxWidth: '150px', marginTop: '10px' }}
-  /> */}
-{/* )} */}
+    
 
 
 

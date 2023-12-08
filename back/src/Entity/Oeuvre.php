@@ -14,20 +14,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
- *       normalizationContext={"groups"={"oeuvre:read"}},
- *     denormalizationContext={"groups"={"oeuvre:write"}},
- *   
- *     collectionOperations={
- *         "get",
- *         "post"={"input_formats"={"multipart/form-data"}}
- *     }
+ *      
  * )   
  * 
  *  
  * )
  * @ORM\Entity(repositoryClass=OeuvreRepository::class)
- * @Vich\Uploadable
- 
+ * 
     
  */
 class Oeuvre
@@ -77,8 +70,8 @@ class Oeuvre
 
 
      /**
-     * @Vich\UploadableField(mapping="oeuvre_image", fileNameProperty="image")
-     * @var File|null
+     * 
+     * 
      */
     private $imageFile;
 
