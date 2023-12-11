@@ -31,7 +31,7 @@ class AdminOeuvreController extends AbstractController
      */
     public function index(OeuvreRepository $oeuvreRepo)
     {
-      return $this->json($oeuvreRepo->findAll(),200,['groups'=>'read:article']);
+      return $this->json($oeuvreRepo->findAll(),200);
     }
 
 
@@ -81,6 +81,18 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
 
 
 }
+
+/**
+ * @Route("/{id}", name="admin_sup", methods={"DELETE"})
+ */
+
+ public function deleteOeuvre(Oeuvre $oeuvre,EntityManagerInterface $em): JsonResponse
+ {
+    $em->remove($oeuvre);
+    $em->flush();
+
+    return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+ }
 
  
 }

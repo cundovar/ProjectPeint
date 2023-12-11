@@ -5,4 +5,5 @@ export const URL={
     fecthAllMatieres: `${API_URL}/matieres`,
   fecthAllCaregories: `${API_URL}/categories`,
   createOeuvre: `${API_URL}/oeuvres`,
+  fecthAllOeuvre: `${API_URL}/oeuvres`,
 }
