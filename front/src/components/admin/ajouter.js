@@ -9,7 +9,6 @@ const Ajouter = () => {
   const [formData, setFormData] = useState({
     titre: "",
     description: "",
-    image: "",
     matieres: [], // Champ pour les matières (liste vide au départ)
     categories: [], // Champ pour les catégories (liste vide au départ)
   });
@@ -19,49 +18,43 @@ const Ajouter = () => {
  
 
   useEffect(() => {
-    // Récupérer les données des matières depuis l'API
-    axios.get(URL.fecthAllMatieres).then((response) => {
-      setMatieres(response.data["hydra:member"]);
-    });
-
-    // Récupérer les données des catégories depuis l'API
-    axios.get(URL.fecthAllCaregories).then((response) => {
-      setCategories(response.data["hydra:member"]);
-    });
+    // Récupérer les données des matières et des catégories depuis l'API simultanément
+    Promise.all([axios.get(URL.fecthAllMatieres), axios.get(URL.fecthAllCaregories)])
+      .then(([matieresResponse, categoriesResponse]) => {
+        setMatieres(matieresResponse.data["hydra:member"]);
+        setCategories(categoriesResponse.data["hydra:member"]);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des données :", error);
+      });
   }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
     try {
       // Formatage des champs "matieres" et "categories" pour correspondre au format JSON attendu
       const formattedData = {
         ...formData,
-        matieres: formData.matieres.map((matiere) => matiere["@id"]),
-        categories: formData.categories.map((categorie) => categorie["@id"]),
+        matieres: formData.matieres.map(id =>  `/api/matieres/${id}` ),
+        categories: formData.categories.map(id =>  `/api/categories/${id}` ),
+        titre:formData.titre,
+        description:formData.description
       };
-
-    
-
-      const response = await axios.post(
-        "http://localhost:8010/api/oeuvres",
-        formattedData, // Utilisation des données formatées
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      console.log(formattedData)
+  
+      // Envoyer les données à l'API (utiliser une requête Axios)
+      const response = await axios.post('http://localhost:8010/api/oeuvres', formattedData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
       if (response.status === 201) {
-        console.log("ok");
+        console.log('Opération réussie :', response.data);
       } else {
-        console.log("raté");
+        console.error('Erreur lors de l\'opération :', response.status, response.data);
       }
     } catch (error) {
-      console.error("erreur :", error);
-      console.error("Message :", error.message);
-      console.error("Réponse :", error.response);
-      console.error("Configuration :", error.config);
+      console.error('Erreur lors de la requête API :', error);
     }
   };
 
@@ -104,17 +97,18 @@ const Ajouter = () => {
 
         {/* Sélecteur pour les matières */}
         <select
-  // multiple // Permet de sélectionner plusieurs matières
   name="matieres"
-  value={formData.matieres} // Assurez-vous que formData.matieres est un tableau
+  value={formData.matieres}
   onChange={(e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, (option) => JSON.parse(option.value));
+    const selectedOptions = Array.from(e.target.selectedOptions, option =>  option.value);
     handleMatieresChange(selectedOptions);
   }}
 >
-  <option value="">Sélectionnez une ou plusieurs matières</option>
+  {formData.matieres.length === 0 && (
+    <option value="" disabled>Choisissez une ou plusieurs matières</option>
+  )}
   {matieres.map((matiere) => (
-    <option key={matiere.id} value={JSON.stringify(matiere)}>
+    <option key={matiere.id} value={matiere.id}>
       {matiere.nom}
     </option>
   ))}
@@ -126,18 +120,19 @@ const Ajouter = () => {
           value={formData.categories}
           onChange={(e) => {
             const selectedOptions = Array.from(
-              e.target.selectedOptions,
-              (option) => JSON.parse(option.value)
-            );
+              e.target.selectedOptions,option => option.value);
+              
             handleCategoriesChange(selectedOptions);
           }}
         >
-          <option value="">Sélectionnez une ou plusieurs catégories</option>
-          {categories.map((categorie) => (
-            <option key={categorie.id} value={JSON.stringify(categorie)}>
-              {categorie.nom}
-            </option>
-          ))}
+            {formData.categories.length === 0 && (
+    <option value="" disabled>Choisissez une ou plusieurs categorie</option>
+  )}
+  {categories.map((categorie) => (
+    <option key={categorie.id} value={categorie.id}>
+      {categorie.nom}
+    </option>
+  ))}
         </select>
         <button type="submit">Ajouter</button>
       </form>

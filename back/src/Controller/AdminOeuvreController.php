@@ -56,19 +56,18 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
 
          // Gérer les relations "categories" et "matieres"
          foreach ($data['categories'] as $categorieId) {
-            $categorie = $this->$categoryrepo->find($categorieId);
+            $categorie = $categoryrepo->find($categorieId);
             if ($categorie) {
                 $oeuvre->addCategory($categorie);
             }
         }
 
         foreach ($data['matieres'] as $matiereId) {
-            $matiere = $this->$matierepo->getRepository(Matiere::class)->find($matiereId);
+            $matiere = $matierepo->find($matiereId);
             if ($matiere) {
                 $oeuvre->addMatiere($matiere);
             }
         }
-     
       
 
         // Enregistrement de l'objet Oeuvre en base de données

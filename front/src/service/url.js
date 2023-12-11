@@ -1,5 +1,8 @@
+
+const API_URL = "http://localhost:8010/api";
+
 export const URL={
-    fecthAllOeuvre:'http://localhost:8010/api/oeuvres',
-    fecthAllCaregories:"http://localhost:8010/api/categories",
-    fecthAllMatieres:"http://localhost:8010/api/matieres"
+    fecthAllMatieres: `${API_URL}/matieres`,
+  fecthAllCaregories: `${API_URL}/categories`,
+  createOeuvre: `${API_URL}/oeuvres`,
 }

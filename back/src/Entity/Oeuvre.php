@@ -12,8 +12,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 /**
  * @ApiResource(
+ *     normalizationContext={"groups"={"api"}},
+ *     denormalizationContext={"groups"={"api"}}
+ *    
  *      
  * )   
  * 
@@ -31,27 +36,23 @@ class Oeuvre
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"api"})
      */
     private $id;
 
     /**
      * 
      * @ORM\Column(type="string", length=255)
+     * @Groups({"api"})
      */
     private $titre;
 
-    /**
-     * 
-     * @ORM\Column(type="string", length=255)
- 
-     */
-    private $image;
-
- 
+  
 
   
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *@Groups({"api"})
      *
      */
     private $description;
@@ -59,32 +60,21 @@ class Oeuvre
     /**
      * @ORM\ManyToMany(targetEntity=Categorie::class, mappedBy="oeuvre")
      * 
+     *  
+     * @Groups({"api"})
      */
     private $categories;
 
     /**
-     *
+     *@Groups({"api"})
      * @ORM\ManyToMany(targetEntity=Matiere::class, mappedBy="oeuvre")
+     * 
+     *  
      */
     private $matieres;
 
 
-     /**
-     * 
-     * 
-     */
-    private $imageFile;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $filepath;
-
-      /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank()
-     */
-    private $dateAt;
+ 
 
     public function __construct()
     {
@@ -109,29 +99,8 @@ class Oeuvre
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
 
-    public function setImage(string $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    public function setImageFile(?File $imageFile): self
-    {
-        $this->imageFile = $imageFile;
-       
-        return $this;
-    }
+ 
 
 
 
@@ -203,27 +172,5 @@ class Oeuvre
         return $this;
     }
 
-    public function getFilepath(): ?string
-    {
-        return $this->filepath;
-    }
-
-    public function setFilepath(?string $filepath): self
-    {
-        $this->filepath = $filepath;
-
-        return $this;
-    }
-
-
-    public function getDateAt(): ?\DateTimeInterface
-    {
-        return $this->dateAt;
-    }
-
-    public function setDateAt(\DateTimeInterface $dateAt): self
-    {
-        $this->dateAt = $dateAt;
-        return $this;
-    }
+    
 }
