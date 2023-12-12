@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { URL } from "../service/url";
 import DeleteButton from "./utils/DeleteButton";
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   
@@ -49,6 +50,9 @@ const Home = () => {
               <div> comentaire :{item.commentaire}</div>
               <div> description :{item.description}</div>
               <DeleteButton  apiUrl={`http://localhost:8010/api/oeuvres/${item.id}`}  onSuccessfulDelete={handleSuccessfulDelete } />
+              <Link to={`/modif/${item.id}`} >
+                <button>modif</button>
+              </Link>
             </div>
           ))}
       </div>

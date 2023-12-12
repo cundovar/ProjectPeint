@@ -8,7 +8,9 @@ use App\Repository\CategorieRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\OeuvreRepository;
 use App\Serializer\UploadedFileDenormalizer;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -94,5 +97,21 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
     return new JsonResponse(null, Response::HTTP_NO_CONTENT);
  }
 
- 
+ /**
+  * @Route("/{id}",name="admin_edit" ,methods={"PUT"})
+  */
+
+  public function editOeuvre(Oeuvre $oeuvre,Request $request,EntityManagerInterface $em,SerializerInterface $serializer ):JsonResponse
+  {
+    $editOeuvre = $serializer->deserialize($request->getContent(), 
+    Oeuvre::class, 
+    'json', 
+    [AbstractNormalizer::OBJECT_TO_POPULATE => $oeuvre]);
+
+
+
+$em->persist($editOeuvre);
+$em->flush();
+return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+  }
 }

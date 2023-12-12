@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Ajouter from './components/admin/ajouter';
 import TestReact from './components/pageTest0';
-
+import Edit from './components/page/admin/crud/Edit';
 
 
 
@@ -19,6 +19,7 @@ function App() {
              <Route path="/" element={<Home />}  /> 
              <Route path="/test" element={<TestReact />}  /> 
              <Route path="/ajout" element={<Ajouter />}  /> 
+             <Route path="/modif/:id" element={<Edit />}  /> 
                
         </Routes> 
      {/* <Footer /> */}
