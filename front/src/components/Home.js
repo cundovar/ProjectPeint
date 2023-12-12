@@ -4,6 +4,7 @@ import { URL } from "../service/url";
 import DeleteButton from "./utils/DeleteButton";
 
 const Home = () => {
+  
   const [oeuvre, setOeuvre] = useState([]);
   const [indexTableau, setIndexTableau] = useState(0);
   const tableau = ["hh", "ff", "aa"];
@@ -11,23 +12,27 @@ const Home = () => {
     setIndexTableau((prevIndex) => (prevIndex + 1) % tableau.length);
   };
 
-  const handleSuccessfulDelete = () => {
-    // Code à exécuter après une suppression réussie
-    console.log('Suppression réussie !');
+ 
+  const fetchOeuvre = async () => {
+    try {
+      const { data } = await axios.get(URL.fecthAllOeuvre);
+      setOeuvre(data["hydra:member"]);
+    } catch (error) {
+      console.error("Erreur :", error);
+    }
   };
 
   useEffect(() => {
-    const fetchOeuvre = async () => {
-      try {
-        const { data } = await axios.get(URL.fecthAllOeuvre);
-        setOeuvre(data["hydra:member"]);
-      } catch (error) {
-        console.error("Erreur :", error);
-      }
-    };
 
     fetchOeuvre();
-  }, []);
+  }, );
+
+  const handleSuccessfulDelete = () => {
+
+    fetchOeuvre()
+    // Code à exécuter après une suppression réussie
+    console.log('Suppression réussie !');
+  };
 
   return (
     <>
@@ -43,10 +48,15 @@ const Home = () => {
 
               <div> comentaire :{item.commentaire}</div>
               <div> description :{item.description}</div>
-              <DeleteButton  apiUrl={`http://localhost:8010/api/oeuvres/${item.id}`}  onSuccessfulDelete={handleSuccessfulDelete} />
+              <DeleteButton  apiUrl={`http://localhost:8010/api/oeuvres/${item.id}`}  onSuccessfulDelete={handleSuccessfulDelete } />
             </div>
           ))}
       </div>
+
+
+
+
+
     </>
   );
 };

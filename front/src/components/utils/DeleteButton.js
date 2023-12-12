@@ -12,7 +12,8 @@ const DeleteButton = ({ apiUrl, onSuccessfulDelete }) => {
       
       // Si la suppression est réussie, appeler la fonction onSuccessfulDelete
       if (response.status === 204) {
-        onSuccessfulDelete();
+        const oeuvreId = apiUrl.substring(apiUrl.lastIndexOf("/") + 1);
+        onSuccessfulDelete(oeuvreId);
       } else {
         console.error('Erreur lors de la suppression :', response.status, response.data);
       }
