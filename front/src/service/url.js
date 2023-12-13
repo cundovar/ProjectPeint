@@ -6,4 +6,5 @@ export const URL={
   fecthAllCaregories: `${API_URL}/categories`,
   createOeuvre: `${API_URL}/oeuvres`,
   fecthAllOeuvre: `${API_URL}/oeuvres`,
+  fecthOeuvreId: `${API_URL}/oeuvres`,
 }

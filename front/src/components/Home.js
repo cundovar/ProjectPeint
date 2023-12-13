@@ -26,12 +26,12 @@ const Home = () => {
   useEffect(() => {
 
     fetchOeuvre();
-  }, );
+  },[] ); // le tableau vide appelle une seule fois fetchoeuvre sinon sans se tableau la fonction sera appeller a interval régulier
 
   const handleSuccessfulDelete = () => {
 
-    fetchOeuvre()
     // Code à exécuter après une suppression réussie
+    fetchOeuvre()
     console.log('Suppression réussie !');
   };
 

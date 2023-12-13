@@ -98,20 +98,48 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
  }
 
  /**
-  * @Route("/{id}",name="admin_edit" ,methods={"PUT"})
-  */
+     * @Route("/{id}", name="edit", methods={"PUT"})
+     */
+    public function editOeuvre(int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
+    {
+        // Récupérer l'œuvre à partir de la base de données
+        $oeuvre = $this->getDoctrine()->getRepository(Oeuvre::class)->find($id);
 
-  public function editOeuvre(Oeuvre $oeuvre,Request $request,EntityManagerInterface $em,SerializerInterface $serializer ):JsonResponse
-  {
-    $editOeuvre = $serializer->deserialize($request->getContent(), 
-    Oeuvre::class, 
-    'json', 
-    [AbstractNormalizer::OBJECT_TO_POPULATE => $oeuvre]);
+        // Si l'œuvre n'est pas trouvée, retourner une réponse 404
+        if (!$oeuvre) {
+            return $this->json(['message' => 'Œuvre non trouvée.'], 404);
+        }
 
+        // Désérialiser les données de la requête dans l'entité Oeuvre
+        $data = json_decode($request->getContent(), true);
 
+        // Appliquer les données désérialisées à l'entité Oeuvre
+        $serializer->deserialize(
+            $request->getContent(),
+            Oeuvre::class,
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $oeuvre]
+        );
 
-$em->persist($editOeuvre);
-$em->flush();
-return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
-  }
+        // Valider l'entité Oeuvre
+        $errors = $validator->validate($oeuvre);
+
+        // S'il y a des erreurs de validation, retourner une réponse 400 avec les erreurs
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
+            }
+
+            return $this->json(['errors' => $errorMessages], 400);
+        }
+
+        // Enregistrer les modifications en base de données
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
+
+        // Retourner une réponse 200 OK avec l'œuvre mise à jour
+        return $this->json(['message' => 'Œuvre mise à jour avec succès.', 'data' => $oeuvre], 200);
+    }
+
 }
