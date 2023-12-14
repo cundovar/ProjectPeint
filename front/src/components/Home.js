@@ -7,11 +7,11 @@ import { Link } from 'react-router-dom';
 const Home = () => {
   
   const [oeuvre, setOeuvre] = useState([]);
-  const [indexTableau, setIndexTableau] = useState(0);
-  const tableau = ["hh", "ff", "aa"];
-  const plus = () => {
-    setIndexTableau((prevIndex) => (prevIndex + 1) % tableau.length);
-  };
+  // const [indexTableau, setIndexTableau] = useState(0);
+  // const tableau = ["hh", "ff", "aa"];
+  // const plus = () => {
+  //   setIndexTableau((prevIndex) => (prevIndex + 1) % tableau.length);
+  // };
 
  
   const fetchOeuvre = async () => {
@@ -37,11 +37,12 @@ const Home = () => {
 
   return (
     <>
-      <p>test :{tableau[indexTableau]} </p>
+      {/* <p>test :{tableau[indexTableau]} </p>
       <button onClick={plus}>plus 1</button>
 
       <div className="mt-10">test 1</div>
-      <div className="oeuvre flex flex-wrap space-x-8 space-y-10 mt-10">
+    */}
+    <div className="oeuvre flex flex-wrap space-x-8 space-y-10 mt-10">
         {oeuvre &&
           oeuvre?.map((item, index) => (
             <div key={index} className="border space-y-5 ">
