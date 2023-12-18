@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +37,30 @@ class AdminOeuvreController extends AbstractController
     {
       return $this->json($oeuvreRepo->findAll(),200);
     }
+    /**
+     * @Route("/{id}", name="admin_show", methods={"GET"})
+     */
+    public function show($id)
+    {
+     // Récupérer l'entité Oeuvre par son ID depuis la base de données
+     $oeuvre = $this->getDoctrine()->getRepository(Oeuvre::class)->find($id);
+
+     // Si l'œuvre n'est pas trouvée, retourner une réponse JSON appropriée
+     if (!$oeuvre) {
+         return new JsonResponse(['message' => 'Oeuvre non trouvée'], 404);
+     }
+
+     // Convertir l'entité Oeuvre en tableau ou objet que vous souhaitez retourner
+     $data = [
+         'id' => $oeuvre->getId(),
+         'titre' => $oeuvre->getTitre(),
+         'description' => $oeuvre->getDescription(),
+         // Ajoutez d'autres champs selon votre modèle Oeuvre
+     ];
+
+     // Retourner une réponse JSON avec les détails de l'œuvre
+     return $this->json($data);
+    }
 
 
     /**
@@ -48,7 +73,8 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
     if (
         isset($data['titre']) &&
         isset($data['description'])&&
-        isset($data['image']) &&
+        isset($data['image'])&&
+     
         isset($data['categories']) &&
         isset($data['matieres'])
     ) {
@@ -56,6 +82,7 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
         $oeuvre = new Oeuvre();
         $oeuvre->setTitre($data['titre']);
         $oeuvre->setDescription($data['description']);
+        $oeuvre->setImage($data['image']);
 
          // Gérer les relations "categories" et "matieres"
          foreach ($data['categories'] as $categorieId) {
@@ -70,6 +97,29 @@ public function ajouter(Request $request,MatiereRepository $matierepo,EntityMana
             if ($matiere) {
                 $oeuvre->addMatiere($matiere);
             }
+        }
+
+
+          // Gestion du fichier image
+          if ($request->files->has('image')) {
+            /** @var UploadedFile $imageFile */
+            //recuperation de image dans champs react image de formdata
+            $imageFile = $request->files->get('image');
+            $newFileName = md5(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
+
+            try {
+                // Déplacez le fichier vers le répertoire où vous souhaitez le stocker
+                $imageFile->move($this->getParameter('image_oeuvre_directory') . '/' . $newFileName);
+
+                // Mettez à jour le nom du fichier dans votre entité
+                $oeuvre->setImage($newFileName);
+            } catch (FileException $e) {
+                // Gérez l'erreur de téléchargement
+                return $this->json(['message' => 'Erreur lors du téléchargement de l\'image'], 500);
+            }
+        } else {
+            // Aucun fichier image n'a été fourni
+            return $this->json(['message' => 'L\'image est requise'], 400);
         }
       
 

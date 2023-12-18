@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { URL } from "../../service/url";
+import { URL } from "../../../../service/url";
+import FileUploadSingle from "../../../admin/FileUpload";
 
 
 const Ajouter = () => {
@@ -9,6 +10,7 @@ const Ajouter = () => {
   const [formData, setFormData] = useState({
     titre: "",
     description: "",
+    image: null, // Champ pour le fichier/image (null au départ)
     matieres: [], // Champ pour les matières (liste vide au départ)
     categories: [], // Champ pour les catégories (liste vide au départ)
   });
@@ -19,7 +21,7 @@ const Ajouter = () => {
 
   useEffect(() => {
     // Récupérer les données des matières et des catégories depuis l'API simultanément
-    Promise.all([axios.get(URL.fecthAllMatieres), axios.get(URL.fecthAllCaregories)])
+    Promise.all([axios.get(URL.fecthAllMatieres), axios.get(URL.fecthAllCategories)])
       .then(([matieresResponse, categoriesResponse]) => {
         setMatieres(matieresResponse.data["hydra:member"]);
         setCategories(categoriesResponse.data["hydra:member"]);
@@ -37,9 +39,11 @@ const Ajouter = () => {
         matieres: formData.matieres.map(id =>  `/api/matieres/${id}` ),
         categories: formData.categories.map(id =>  `/api/categories/${id}` ),
         titre:formData.titre,
-        description:formData.description
+        description:formData.description,
+         // Ajout du champ "image"
+         image: formData.image ? formData.image.name : null,
       };
-      console.log(formattedData)
+      console.log("formattedData",formattedData)
   
       // Envoyer les données à l'API (utiliser une requête Axios)
       const response = await axios.post('http://localhost:8010/api/oeuvres', formattedData, {
@@ -134,6 +138,23 @@ const Ajouter = () => {
     </option>
   ))}
         </select>
+
+  {/* Intégration du composant FileUploadSingle */}
+  <FileUploadSingle
+          onFileChange={(selectedFile, imageUrl) => {
+            // Gérez les changements de fichier ici si nécessaire
+            console.log('Selected File:', selectedFile);
+            console.log('Image URL:', imageUrl);
+            setFormData({ ...formData, image: selectedFile });
+          }}
+          onUploadClick={(file) => {
+            // Gérez le clic sur le bouton "Upload" ici si nécessaire
+            console.log('Upload Clicked:', file);
+          }}
+        />
+
+
+
         <button type="submit">Ajouter</button>
       </form>
     </div>

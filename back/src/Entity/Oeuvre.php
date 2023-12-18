@@ -73,6 +73,24 @@ class Oeuvre
      */
     private $matieres;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"api"})
+     */
+    private $image;
+
+
+
+
+    /**
+     * @Assert\File(
+     *     maxSize = "5M",
+     *     mimeTypes = {"image/jpeg", "image/png", "image/gif", "application/pdf", "application/x-pdf"},
+     *     mimeTypesMessage = "Veuillez télécharger un fichier valide (JPG, PNG, GIF, PDF)"
+     * )
+     */
+    private $imageFile;
+
 
  
 
@@ -168,6 +186,32 @@ class Oeuvre
         if ($this->matieres->removeElement($matiere)) {
             $matiere->removeOeuvre($this);
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getimageFile(): ?UploadedFile
+    {
+        return $this->imageFile;
+    }
+
+    public function setimageFile(?UploadedFile $imageFile): self
+    {
+        $this->imageFile = $imageFile;
+
+        // Ajoutez votre logique ici pour gérer le téléchargement du fichier
 
         return $this;
     }
